@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>app.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+app.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">express from </span><span class="s2">'express'</span><span class="s3">;</span>
+<span class="s0">import </span><span class="s1">mongoose from </span><span class="s2">'mongoose'</span><span class="s3">;</span>
+<span class="s0">import </span><span class="s1">path from </span><span class="s2">'path'</span><span class="s3">;</span>
+<span class="s0">import </span><span class="s3">{ </span><span class="s1">fileURLToPath</span><span class="s3">} </span><span class="s1">from </span><span class="s2">'url'</span><span class="s3">;</span>
+<span class="s0">import </span><span class="s1">userRoutes from </span><span class="s2">&quot;./routes/userRoutes.js&quot;</span><span class="s3">;</span>
+<span class="s0">import </span><span class="s1">blogRoutes from </span><span class="s2">&quot;./routes/blogRoutes.js&quot;</span><span class="s3">;</span>
+
+
+<span class="s0">const </span><span class="s1">app </span><span class="s3">= </span><span class="s1">express</span><span class="s3">();</span>
+<span class="s0">const </span><span class="s1">port </span><span class="s3">= </span><span class="s4">3001</span><span class="s3">;</span>
+
+
+<span class="s0">const </span><span class="s1">__filename </span><span class="s3">= </span><span class="s1">fileURLToPath</span><span class="s3">(</span><span class="s0">import</span><span class="s3">.</span><span class="s1">meta</span><span class="s3">.</span><span class="s1">url</span><span class="s3">);</span>
+<span class="s0">const </span><span class="s1">__dirname </span><span class="s3">= </span><span class="s1">path</span><span class="s3">.</span><span class="s1">dirname</span><span class="s3">(</span><span class="s1">__filename</span><span class="s3">);</span>
+
+
+<span class="s1">app</span><span class="s3">.</span><span class="s1">use</span><span class="s3">(</span><span class="s1">express</span><span class="s3">.</span><span class="s1">json</span><span class="s3">());</span>
+
+
+<span class="s1">mongoose</span><span class="s3">.</span><span class="s1">connect</span><span class="s3">(</span><span class="s2">'mongodb://localhost:27017/IST256Solo2'</span><span class="s3">, {</span>
+    <span class="s1">autoCreate</span><span class="s3">: </span><span class="s0">true</span>
+<span class="s3">}).</span><span class="s1">then</span><span class="s3">(() =&gt; {</span>
+    <span class="s1">console</span><span class="s3">.</span><span class="s1">log</span><span class="s3">(</span><span class="s2">&quot;Connected to MongoDB&quot;</span><span class="s3">);</span>
+<span class="s3">}).</span><span class="s1">catch</span><span class="s3">((</span><span class="s1">err</span><span class="s3">) =&gt; {</span>
+    <span class="s1">console</span><span class="s3">.</span><span class="s1">error</span><span class="s3">(</span><span class="s2">&quot; Error Connecting to MongoDB&quot;</span><span class="s3">, </span><span class="s1">err</span><span class="s3">)</span>
+<span class="s3">});</span>
+
+
+<span class="s1">app</span><span class="s3">.</span><span class="s1">use</span><span class="s3">(</span><span class="s2">'/users'</span><span class="s3">, </span><span class="s1">userRoutes</span><span class="s3">);</span>
+<span class="s1">app</span><span class="s3">.</span><span class="s1">use</span><span class="s3">(</span><span class="s2">'/blogs'</span><span class="s3">, </span><span class="s1">blogRoutes</span><span class="s3">);</span>
+
+
+<span class="s1">app</span><span class="s3">.</span><span class="s1">use</span><span class="s3">(</span><span class="s1">express</span><span class="s3">.</span><span class="s1">static</span><span class="s3">(</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">__dirname</span><span class="s3">, </span><span class="s2">'frontend'</span><span class="s3">), {</span>
+    <span class="s1">setHeaders</span><span class="s3">: (</span><span class="s1">res</span><span class="s3">, </span><span class="s1">filePath</span><span class="s3">) =&gt; {</span>
+        <span class="s0">if </span><span class="s3">(</span><span class="s1">filePath</span><span class="s3">.</span><span class="s1">endsWith</span><span class="s3">(</span><span class="s2">'.js'</span><span class="s3">)){</span>
+            <span class="s1">res</span><span class="s3">.</span><span class="s1">setHeader </span><span class="s3">(</span><span class="s2">'content-Type'</span><span class="s3">,</span><span class="s2">'application/javascript'</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}));</span>
+<span class="s1">app</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s2">'/'</span><span class="s3">, (</span><span class="s1">req</span><span class="s3">, </span><span class="s1">res</span><span class="s3">) =&gt;{</span>
+    <span class="s1">res</span><span class="s3">.</span><span class="s1">sendFile</span><span class="s3">(</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">__dirname </span><span class="s3">+ </span><span class="s2">'/frontend/index.html'</span><span class="s3">));</span>
+<span class="s3">});</span>
+
+
+<span class="s1">app</span><span class="s3">.</span><span class="s1">listen</span><span class="s3">(</span><span class="s1">port</span><span class="s3">, () =&gt; {</span>
+    <span class="s1">console</span><span class="s3">.</span><span class="s1">log</span><span class="s3">(</span><span class="s2">&quot;Server is running&quot;</span><span class="s3">);</span>
+<span class="s3">} )</span>
+
+</pre>
+</body>
+</html>
